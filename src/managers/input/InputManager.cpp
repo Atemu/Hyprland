@@ -86,6 +86,8 @@ void CInputManager::onMouseMoved(IPointer::SMotionEvent e) {
 
     const auto  DELTA = *PNOACCEL == 1 ? e.unaccel : e.delta;
 
+    if (g_pSeatManager->isPointerFrameSkipped)
+        g_pPointerManager->storeMovement((uint64_t)e.timeMs, DELTA, e.unaccel);
     PROTO::relativePointer->sendRelativeMotion((uint64_t)e.timeMs * 1000, DELTA, e.unaccel);
 
     g_pPointerManager->move(DELTA);
@@ -189,9 +191,9 @@ void CInputManager::mouseMoveUnified(uint32_t time, bool refocus) {
     // constraints
     if (!g_pSeatManager->mouse.expired() && isConstrained()) {
         const auto SURF       = CWLSurface::fromResource(g_pCompositor->m_pLastFocus.lock());
-        const auto CONSTRAINT = SURF->constraint();
+        const auto CONSTRAINT = SURF ? SURF->constraint() : nullptr;
 
-        if (SURF && CONSTRAINT) {
+        if (CONSTRAINT) {
             if (CONSTRAINT->isLocked()) {
                 const auto HINT = CONSTRAINT->logicPositionHint();
                 g_pCompositor->warpCursorTo(HINT, true);
