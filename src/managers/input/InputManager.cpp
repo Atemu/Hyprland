@@ -88,6 +88,8 @@ void CInputManager::onMouseMoved(IPointer::SMotionEvent e) {
 
     if (g_pSeatManager->isPointerFrameSkipped)
         g_pPointerManager->storeMovement((uint64_t)e.timeMs, DELTA, e.unaccel);
+    else
+        g_pPointerManager->setStoredMovement((uint64_t)e.timeMs, DELTA, e.unaccel);
     PROTO::relativePointer->sendRelativeMotion((uint64_t)e.timeMs * 1000, DELTA, e.unaccel);
 
     g_pPointerManager->move(DELTA);
