@@ -180,6 +180,8 @@ class CMonitor {
     void        scheduleDone();
     bool        attemptDirectScanout();
 
+    void        debugLastPresentation(const std::string& message);
+
     bool        m_bEnabled             = false;
     bool        m_bRenderingInitPassed = false;
 
